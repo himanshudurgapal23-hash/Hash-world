@@ -1,18 +1,1366 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hash World</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Hash World — Building Websites. Managing Brands. Growing Businesses.</title>
+  <meta name="description" content="Hash World is a premium digital agency offering Website Development, Branding, SEO, and Social Media Management." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:    #0B0F19;
+      --bg-card:    #111827;
+      --blue:       #2563EB;
+      --blue-glow:  rgba(37,99,235,0.35);
+      --blue-light: #3B82F6;
+      --white:      #FFFFFF;
+      --text-muted: rgba(255,255,255,0.55);
+      --text-dim:   rgba(255,255,255,0.75);
+      --border:     rgba(255,255,255,0.08);
+      --border-blue:rgba(37,99,235,0.4);
+      --radius:     16px;
+      --radius-sm:  10px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg-deep);
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ─── SCROLLBAR ─── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-deep); }
+    ::-webkit-scrollbar-thumb { background: var(--blue); border-radius: 3px; }
+
+    /* ─── CANVAS BACKGROUND ─── */
+    #bg-canvas {
+      position: fixed; inset: 0; z-index: 0;
+      pointer-events: none;
+    }
+
+    /* ─── NAV ─── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      padding: 0 5%;
+      height: 72px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(11,15,25,0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.3s;
+    }
+    .nav-logo {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.5rem; font-weight: 700;
+      letter-spacing: -0.02em;
+      text-decoration: none; color: var(--white);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .nav-logo span { color: var(--blue); }
+    .nav-links {
+      display: flex; gap: 36px; list-style: none;
+    }
+    .nav-links a {
+      color: var(--text-dim); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -4px; left: 0; right: 0;
+      height: 2px; background: var(--blue);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--white); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta {
+      background: var(--blue); color: var(--white);
+      border: none; cursor: pointer;
+      padding: 10px 22px; border-radius: 8px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.875rem; font-weight: 600;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .nav-cta:hover {
+      background: var(--blue-light);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 24px var(--blue-glow);
+    }
+    .hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px;
+    }
+    .hamburger span {
+      display: block; width: 24px; height: 2px;
+      background: var(--white); border-radius: 2px;
+      transition: all 0.3s;
+    }
+    .mobile-menu {
+      display: none; position: fixed;
+      top: 72px; left: 0; right: 0;
+      background: rgba(11,15,25,0.98);
+      backdrop-filter: blur(20px);
+      padding: 24px 5% 32px;
+      border-bottom: 1px solid var(--border);
+      z-index: 99;
+      flex-direction: column; gap: 0;
+    }
+    .mobile-menu.open { display: flex; }
+    .mobile-menu a {
+      color: var(--text-dim); text-decoration: none;
+      font-size: 1.1rem; font-weight: 500;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s;
+    }
+    .mobile-menu a:hover { color: var(--white); }
+    .mobile-menu .nav-cta {
+      margin-top: 20px; text-align: center;
+      display: block; padding: 14px;
+    }
+
+    /* ─── SECTIONS WRAPPER ─── */
+    section {
+      position: relative; z-index: 1;
+    }
+
+    /* ─── HERO ─── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 5% 80px;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(37,99,235,0.12);
+      border: 1px solid var(--border-blue);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--blue-light);
+      margin-bottom: 32px;
+    }
+    .hero-eyebrow .dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--blue-light);
+      animation: pulse-dot 2s infinite;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.8); }
+    }
+    .hero-headline {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2.8rem, 6vw, 5.5rem);
+      font-weight: 700;
+      line-height: 1.08;
+      letter-spacing: -0.03em;
+      margin-bottom: 24px;
+      max-width: 900px;
+    }
+    .hero-headline .word-rotate {
+      display: inline-block;
+      position: relative;
+      color: var(--blue-light);
+      min-width: 340px;
+    }
+    .word-rotate .word {
+      position: absolute; left: 0; right: 0;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      white-space: nowrap;
+    }
+    .word-rotate .word.active {
+      opacity: 1; transform: translateY(0);
+      position: relative;
+    }
+    .hero-sub {
+      font-size: clamp(1rem, 2vw, 1.2rem);
+      color: var(--text-muted);
+      max-width: 540px;
+      margin: 0 auto 48px;
+      font-weight: 400;
+    }
+    .hero-btns {
+      display: flex; gap: 16px; flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn-primary {
+      background: var(--blue); color: var(--white);
+      padding: 15px 36px; border-radius: 10px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none; border: none; cursor: pointer;
+      transition: all 0.25s;
+      box-shadow: 0 0 0 0 var(--blue-glow);
+      display: inline-block;
+    }
+    .btn-primary:hover {
+      background: var(--blue-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--blue-glow);
+    }
+    .btn-ghost {
+      background: transparent;
+      color: var(--white);
+      padding: 15px 36px; border-radius: 10px;
+      font-weight: 600; font-size: 1rem;
+      text-decoration: none;
+      border: 1px solid var(--border);
+      transition: all 0.25s;
+      display: inline-block;
+    }
+    .btn-ghost:hover {
+      border-color: rgba(255,255,255,0.3);
+      background: rgba(255,255,255,0.05);
+      transform: translateY(-2px);
+    }
+    .hero-stats {
+      margin-top: 72px;
+      display: flex; gap: 48px; flex-wrap: wrap;
+      justify-content: center;
+      padding-top: 48px;
+      border-top: 1px solid var(--border);
+      width: 100%; max-width: 700px;
+    }
+    .hero-stat-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2.4rem; font-weight: 700;
+      color: var(--white); line-height: 1;
+    }
+    .hero-stat-num span { color: var(--blue-light); }
+    .hero-stat-label {
+      font-size: 0.85rem; color: var(--text-muted);
+      margin-top: 4px; font-weight: 400;
+    }
+
+    /* ─── ABOUT ─── */
+    #about {
+      padding: 120px 5%;
+    }
+    .about-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px;
+      align-items: center;
+    }
+    .about-visual {
+      position: relative;
+    }
+    .about-img-frame {
+      position: relative; border-radius: 20px; overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      aspect-ratio: 4/3;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .about-img-frame::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, transparent 60%);
+    }
+    .about-icon-grid {
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 20px;
+      padding: 40px;
+      width: 100%;
+    }
+    .about-icon-cell {
+      aspect-ratio: 1;
+      background: rgba(37,99,235,0.08);
+      border: 1px solid var(--border-blue);
+      border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      transition: all 0.3s;
+    }
+    .about-icon-cell:hover {
+      background: rgba(37,99,235,0.18);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(37,99,235,0.25);
+    }
+    .about-badge {
+      position: absolute; bottom: -20px; right: -20px;
+      background: var(--blue);
+      border-radius: 16px; padding: 20px 24px;
+      text-align: center;
+      box-shadow: 0 12px 40px rgba(37,99,235,0.45);
+    }
+    .about-badge-num {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 2rem; font-weight: 700; line-height: 1;
+    }
+    .about-badge-text { font-size: 0.75rem; opacity: 0.8; margin-top: 2px; }
+    .section-label {
+      font-size: 0.78rem; font-weight: 600;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 16px;
+    }
+    .section-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: clamp(2rem, 4vw, 3rem);
+      font-weight: 700; letter-spacing: -0.02em;
+      line-height: 1.15; margin-bottom: 20px;
+    }
+    .section-body {
+      color: var(--text-dim); font-size: 1rem;
+      line-height: 1.75; margin-bottom: 32px;
+    }
+    .about-features { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+    .about-features li {
+      display: flex; align-items: center; gap: 12px;
+      color: var(--text-dim); font-size: 0.95rem;
+    }
+    .about-features li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 20px; height: 20px; border-radius: 50%;
+      background: rgba(37,99,235,0.2);
+      border: 1.5px solid var(--blue);
+      display: flex; align-items: center; justify-content: center;
+      background-image: url("data:image/svg+xml,%3Csvg width='10' height='8' viewBox='0 0 10 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 4L3.5 6.5L9 1' stroke='%232563EB' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat; background-position: center;
+    }
+
+    /* ─── SERVICES ─── */
+    #services {
+      padding: 120px 5%;
+      background: linear-gradient(180deg, transparent 0%, rgba(17,24,39,0.5) 50%, transparent 100%);
+    }
+    .section-header {
+      text-align: center; margin-bottom: 64px;
+      max-width: 640px; margin-left: auto; margin-right: auto;
+    }
+    .services-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+    }
+    .service-card {
+      background: rgba(17,24,39,0.6);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 36px 32px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative; overflow: hidden;
+      transition: all 0.35s ease;
+      cursor: default;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(37,99,235,0.08) 0%, transparent 70%);
+      opacity: 0; transition: opacity 0.35s;
+    }
+    .service-card:hover {
+      border-color: var(--border-blue);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.4), 0 0 0 1px var(--border-blue), 0 8px 32px var(--blue-glow);
+    }
+    .service-card:hover::before { opacity: 1; }
+    .service-icon {
+      width: 56px; height: 56px; border-radius: 14px;
+      background: rgba(37,99,235,0.12);
+      border: 1px solid var(--border-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.6rem; margin-bottom: 24px;
+      transition: all 0.35s;
+    }
+    .service-card:hover .service-icon {
+      background: rgba(37,99,235,0.25);
+      box-shadow: 0 8px 24px var(--blue-glow);
+    }
+    .service-name {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.2rem; font-weight: 600;
+      margin-bottom: 12px; line-height: 1.3;
+    }
+    .service-desc {
+      color: var(--text-muted); font-size: 0.9rem;
+      line-height: 1.7; margin-bottom: 24px;
+    }
+    .service-tags {
+      display: flex; flex-wrap: wrap; gap: 8px;
+    }
+    .tag {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.04em;
+      background: rgba(37,99,235,0.1);
+      border: 1px solid rgba(37,99,235,0.25);
+      color: var(--blue-light);
+      padding: 4px 10px; border-radius: 100px;
+    }
+
+    /* ─── PORTFOLIO ─── */
+    #portfolio {
+      padding: 120px 5%;
+    }
+    .portfolio-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+    }
+    .portfolio-card {
+      border-radius: var(--radius);
+      overflow: hidden;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      transition: all 0.35s;
+      position: relative;
+      group: true;
+    }
+    .portfolio-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--border-blue);
+      box-shadow: 0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px var(--border-blue);
+    }
+    .portfolio-thumb {
+      height: 200px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3.5rem; position: relative; overflow: hidden;
+    }
+    .portfolio-thumb::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(180deg, transparent 40%, var(--bg-card) 100%);
+    }
+    .portfolio-body { padding: 24px; }
+    .portfolio-category {
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--blue-light); margin-bottom: 8px;
+    }
+    .portfolio-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 1.1rem; font-weight: 600; margin-bottom: 8px;
+    }
+    .portfolio-desc {
+      font-size: 0.875rem; color: var(--text-muted); line-height: 1.6;
+    }
+    .portfolio-link {
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 16px;
+      font-size: 0.85rem; font-weight: 600;
+      color: var(--blue-light); text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .portfolio-link:hover { gap: 10px; }
+
+    /* ─── TESTIMONIALS ─── */
+    #testimonials {
+      padding: 120px 5%;
+      background: linear-gradient(180deg, transparent 0%, rgba(17,24,39,0.5) 50%, transparent 100%);
+    }
+    .testimonials-grid {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: repeat(3,1fr); gap: 24px;
+    }
+    .testi-card {
+      background: rgba(17,24,39,0.7);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 32px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      transition: all 0.3s;
+      position: relative;
+    }
+    .testi-card:hover {
+      border-color: var(--border-blue);
+      transform: translateY(-4px);
+      box-shadow: 0 16px 48px rgba(0,0,0,0.4);
+    }
+    .testi-quote {
+      font-size: 2.5rem; color: var(--blue);
+      line-height: 1; margin-bottom: 16px;
+      font-family: 'Space Grotesk', sans-serif;
+    }
+    .testi-stars { color: #F59E0B; font-size: 0.9rem; margin-bottom: 16px; letter-spacing: 2px; }
+    .testi-text {
+      color: var(--text-dim); font-size: 0.95rem;
+      line-height: 1.75; margin-bottom: 24px;
+      font-style: italic;
+    }
+    .testi-author { display: flex; align-items: center; gap: 14px; }
+    .testi-avatar {
+      width: 46px; height: 46px; border-radius: 50%;
+      background: linear-gradient(135deg, var(--blue), #7C3AED);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 1rem;
+      flex-shrink: 0;
+    }
+    .testi-name { font-weight: 600; font-size: 0.95rem; }
+    .testi-role { font-size: 0.8rem; color: var(--text-muted); }
+
+    /* ─── CONTACT ─── */
+    #contact {
+      padding: 120px 5%;
+    }
+    .contact-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1.2fr; gap: 64px;
+      align-items: start;
+    }
+    .contact-info-item {
+      display: flex; align-items: flex-start; gap: 16px;
+      margin-bottom: 28px;
+    }
+    .contact-info-icon {
+      width: 44px; height: 44px; border-radius: 10px;
+      background: rgba(37,99,235,0.12);
+      border: 1px solid var(--border-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem; flex-shrink: 0; margin-top: 2px;
+    }
+    .contact-info-label { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+    .contact-info-val { font-size: 0.95rem; color: var(--white); margin-top: 2px; }
+    .contact-form-card {
+      background: rgba(17,24,39,0.6);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 40px;
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label {
+      display: block; font-size: 0.82rem; font-weight: 600;
+      color: var(--text-dim); margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      color: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      appearance: none;
+    }
+    .form-group select { cursor: pointer; }
+    .form-group select option { background: var(--bg-card); }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.15);
+    }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-muted); }
+    .form-submit {
+      width: 100%;
+      background: var(--blue); color: var(--white);
+      border: none; cursor: pointer;
+      padding: 15px; border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      transition: all 0.25s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .form-submit:hover {
+      background: var(--blue-light);
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px var(--blue-glow);
+    }
+    .form-success {
+      display: none;
+      text-align: center; padding: 20px;
+      color: #34D399;
+      font-weight: 600; font-size: 1rem;
+    }
+
+    /* ─── FOOTER ─── */
+    footer {
+      padding: 64px 5% 32px;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+    }
+    .footer-inner {
+      max-width: 1200px; margin: 0 auto;
+    }
+    .footer-top {
+      display: grid; grid-template-columns: 1.5fr 1fr 1fr 1fr; gap: 48px;
+      margin-bottom: 56px;
+    }
+    .footer-brand p {
+      color: var(--text-muted); font-size: 0.875rem;
+      line-height: 1.7; margin-top: 12px; margin-bottom: 24px;
+    }
+    .social-links { display: flex; gap: 12px; }
+    .social-link {
+      width: 38px; height: 38px; border-radius: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 1rem;
+      transition: all 0.2s; color: var(--text-dim);
+    }
+    .social-link:hover {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+    .footer-col h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.9rem; font-weight: 600;
+      margin-bottom: 20px; letter-spacing: 0.02em;
+    }
+    .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+    .footer-col ul a {
+      color: var(--text-muted); text-decoration: none;
+      font-size: 0.875rem; transition: color 0.2s;
+    }
+    .footer-col ul a:hover { color: var(--white); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; align-items: center;
+      padding-top: 28px; border-top: 1px solid var(--border);
+      flex-wrap: wrap; gap: 12px;
+    }
+    .footer-bottom p { font-size: 0.8rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--blue-light); text-decoration: none; }
+
+    /* ─── WHATSAPP ─── */
+    .whatsapp-btn {
+      position: fixed; bottom: 28px; right: 28px; z-index: 200;
+      width: 58px; height: 58px; border-radius: 50%;
+      background: #25D366;
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; font-size: 1.7rem;
+      box-shadow: 0 8px 32px rgba(37,211,102,0.45);
+      transition: all 0.3s;
+      animation: wa-pop 0.5s 2s both;
+    }
+    .whatsapp-btn:hover {
+      transform: scale(1.12);
+      box-shadow: 0 12px 40px rgba(37,211,102,0.6);
+    }
+    @keyframes wa-pop {
+      from { opacity: 0; transform: scale(0.5); }
+      to   { opacity: 1; transform: scale(1); }
+    }
+    .whatsapp-tooltip {
+      position: absolute; right: 70px; top: 50%;
+      transform: translateY(-50%);
+      background: rgba(17,24,39,0.95);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 8px 12px;
+      font-size: 0.8rem; font-weight: 600;
+      white-space: nowrap;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.2s;
+      color: var(--white);
+    }
+    .whatsapp-btn:hover .whatsapp-tooltip { opacity: 1; }
+
+    /* ─── SCROLL REVEAL ─── */
+    .reveal {
+      opacity: 0; transform: translateY(30px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1; transform: translateY(0);
+    }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-delay-4 { transition-delay: 0.4s; }
+    .reveal-delay-5 { transition-delay: 0.5s; }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 1024px) {
+      .services-grid, .portfolio-grid, .testimonials-grid { grid-template-columns: repeat(2,1fr); }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; }
+      .about-visual { order: -1; }
+      .about-badge { bottom: 10px; right: 10px; }
+      .contact-inner { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+    }
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hamburger { display: flex; }
+      .services-grid, .portfolio-grid, .testimonials-grid { grid-template-columns: 1fr; }
+      .form-row { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; gap: 28px; }
+      .footer-bottom { flex-direction: column; text-align: center; }
+      .hero-headline .word-rotate { min-width: auto; display: block; }
+      .hero-stats { gap: 28px; }
+      .contact-form-card { padding: 24px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
 </head>
 <body>
-    <h1>Hash World</h1>
-    <h2>Website Development • Website Management • Social Media Management</h2>
 
-    <p>
-        We help businesses build, manage and grow their digital presence.
-    </p>
+<canvas id="bg-canvas"></canvas>
 
-    <button>Contact Us</button>
+<!-- NAV -->
+<nav id="navbar">
+  <a href="#hero" class="nav-logo"><span>#</span>HashWorld</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#portfolio">Work</a></li>
+    <li><a href="#testimonials">Reviews</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">Get a Quote</a>
+  <div class="hamburger" id="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#about" onclick="closeMobile()">About</a>
+  <a href="#services" onclick="closeMobile()">Services</a>
+  <a href="#portfolio" onclick="closeMobile()">Work</a>
+  <a href="#testimonials" onclick="closeMobile()">Reviews</a>
+  <a href="#contact" onclick="closeMobile()">Contact</a>
+  <a href="#contact" class="nav-cta" onclick="closeMobile()">Get a Quote</a>
+</div>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-eyebrow">
+    <span class="dot"></span>
+    Premium Digital Agency · India
+  </div>
+  <h1 class="hero-headline">
+    We Build.<br />
+    <span class="word-rotate" id="wordRotate">
+      <span class="word active">Stunning Websites.</span>
+      <span class="word">Powerful Brands.</span>
+      <span class="word">Scalable Businesses.</span>
+    </span>
+  </h1>
+  <p class="hero-sub">Building Websites. Managing Brands. Growing Businesses. — Hash World turns your vision into a digital powerhouse.</p>
+  <div class="hero-btns">
+    <a href="#services" class="btn-primary">Explore Services</a>
+    <a href="#portfolio" class="btn-ghost">View Our Work</a>
+  </div>
+  <div class="hero-stats">
+    <div>
+      <div class="hero-stat-num" data-count="120">0<span>+</span></div>
+      <div class="hero-stat-label">Projects Delivered</div>
+    </div>
+    <div>
+      <div class="hero-stat-num" data-count="95">0<span>%</span></div>
+      <div class="hero-stat-label">Client Satisfaction</div>
+    </div>
+    <div>
+      <div class="hero-stat-num" data-count="5">0<span>+</span></div>
+      <div class="hero-stat-label">Years Experience</div>
+    </div>
+    <div>
+      <div class="hero-stat-num" data-count="40">0<span>+</span></div>
+      <div class="hero-stat-label">Brands Built</div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-inner">
+    <div class="about-visual reveal">
+      <div class="about-img-frame">
+        <div class="about-icon-grid">
+          <div class="about-icon-cell">🌐</div>
+          <div class="about-icon-cell">📱</div>
+          <div class="about-icon-cell">🎨</div>
+          <div class="about-icon-cell">📈</div>
+          <div class="about-icon-cell">🔍</div>
+          <div class="about-icon-cell">💡</div>
+          <div class="about-icon-cell">🚀</div>
+          <div class="about-icon-cell">⚡</div>
+          <div class="about-icon-cell">🎯</div>
+        </div>
+      </div>
+      <div class="about-badge">
+        <div class="about-badge-num">5★</div>
+        <div class="about-badge-text">Rated Agency</div>
+      </div>
+    </div>
+    <div class="about-content reveal reveal-delay-2">
+      <div class="section-label">About Hash World</div>
+      <h2 class="section-title">Your Growth is Our Blueprint</h2>
+      <p class="section-body">Founded by <strong>Himanshu Durgapal</strong>, Hash World is a full-service digital agency built on one principle: every business deserves a premium digital presence. We combine cutting-edge design, performance engineering, and strategic marketing to deliver results that matter.</p>
+      <p class="section-body">From startups finding their voice to established brands scaling their reach — we are the team behind the growth.</p>
+      <ul class="about-features">
+        <li>Custom-built websites that convert visitors into customers</li>
+        <li>Data-driven SEO that ranks and sustains traffic</li>
+        <li>Social media strategies that build loyal communities</li>
+        <li>Brand identities that are bold, consistent, and memorable</li>
+      </ul>
+      <br/>
+      <a href="#contact" class="btn-primary" style="display:inline-block; margin-top:8px;">Work With Us</a>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="section-header reveal">
+    <div class="section-label">What We Do</div>
+    <h2 class="section-title">Services Built for Results</h2>
+    <p style="color:var(--text-muted); font-size:1rem; line-height:1.7;">Every service we offer is crafted to deliver measurable business outcomes — not just deliverables.</p>
+  </div>
+  <div class="services-grid">
+
+    <div class="service-card reveal">
+      <div class="service-icon">🌐</div>
+      <div class="service-name">Website Development</div>
+      <div class="service-desc">Custom websites engineered for speed, conversion, and scalability. From landing pages to full e-commerce platforms — built to perform.</div>
+      <div class="service-tags">
+        <span class="tag">React / Next.js</span>
+        <span class="tag">WordPress</span>
+        <span class="tag">E-commerce</span>
+        <span class="tag">Mobile-First</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">🛠️</div>
+      <div class="service-name">Website Management</div>
+      <div class="service-desc">Your website runs 24/7 — so should its caretaker. We handle updates, security, backups, and performance monitoring so you never worry.</div>
+      <div class="service-tags">
+        <span class="tag">Maintenance</span>
+        <span class="tag">Security</span>
+        <span class="tag">Uptime</span>
+        <span class="tag">Analytics</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">📣</div>
+      <div class="service-name">Social Media Management</div>
+      <div class="service-desc">Strategic content creation, scheduling, and community management across all platforms. We grow your audience while you focus on your business.</div>
+      <div class="service-tags">
+        <span class="tag">Instagram</span>
+        <span class="tag">LinkedIn</span>
+        <span class="tag">Content Strategy</span>
+        <span class="tag">Reels</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal reveal-delay-1">
+      <div class="service-icon">🔍</div>
+      <div class="service-name">Search Engine Optimization</div>
+      <div class="service-desc">Rank higher, stay longer. Our technical and content SEO approach builds sustainable organic traffic that compounds over time.</div>
+      <div class="service-tags">
+        <span class="tag">On-Page SEO</span>
+        <span class="tag">Technical SEO</span>
+        <span class="tag">Link Building</span>
+        <span class="tag">Local SEO</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal reveal-delay-2">
+      <div class="service-icon">🎨</div>
+      <div class="service-name">Branding</div>
+      <div class="service-desc">From logo to brand system — we create identities that are distinctive, consistent, and built to inspire trust at every touchpoint.</div>
+      <div class="service-tags">
+        <span class="tag">Logo Design</span>
+        <span class="tag">Brand Identity</span>
+        <span class="tag">Style Guide</span>
+        <span class="tag">Packaging</span>
+      </div>
+    </div>
+
+    <div class="service-card reveal reveal-delay-3" style="background: linear-gradient(135deg, rgba(37,99,235,0.15) 0%, rgba(17,24,39,0.7) 100%); border-color: var(--border-blue);">
+      <div class="service-icon" style="background:rgba(37,99,235,0.25); border-color:var(--blue);">🚀</div>
+      <div class="service-name">Full Digital Growth Package</div>
+      <div class="service-desc">Combine all five services into a single, cohesive growth strategy. Perfect for brands ready to dominate their market online.</div>
+      <div class="service-tags">
+        <span class="tag">All-In-One</span>
+        <span class="tag">Growth Strategy</span>
+        <span class="tag">Priority Support</span>
+      </div>
+      <a href="#contact" style="display:inline-flex;align-items:center;gap:6px;margin-top:20px;font-size:0.85rem;font-weight:600;color:var(--blue-light);text-decoration:none;">Enquire Now →</a>
+    </div>
+
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section id="portfolio">
+  <div class="section-header reveal">
+    <div class="section-label">Our Work</div>
+    <h2 class="section-title">Projects We're Proud Of</h2>
+    <p style="color:var(--text-muted); font-size:1rem; line-height:1.7;">A glimpse of the brands and businesses we've helped thrive in the digital world.</p>
+  </div>
+  <div class="portfolio-grid">
+
+    <div class="portfolio-card reveal">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #0f2b5b, #1a4fa0);">🏪</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">E-commerce · Web Dev</div>
+        <div class="portfolio-title">Desi Craft Store</div>
+        <div class="portfolio-desc">A full-featured online store for handcrafted Indian products. Built with Next.js and integrated Razorpay for seamless checkout.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card reveal reveal-delay-1">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #1a0533, #4c1d95);">🍽️</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">Branding · Social Media</div>
+        <div class="portfolio-title">Spice Route Restaurant</div>
+        <div class="portfolio-desc">Complete brand identity and social media overhaul for a fine-dining chain. Grew Instagram following by 3,200% in 6 months.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card reveal reveal-delay-2">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #052e16, #14532d);">📊</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">SEO · Website Management</div>
+        <div class="portfolio-title">FinEdge Consultants</div>
+        <div class="portfolio-desc">SEO strategy that took a finance consultancy from Page 4 to #1 for 12 target keywords within 4 months.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card reveal">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #1c0a00, #7c2d12);">🏋️</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">Web Dev · Branding</div>
+        <div class="portfolio-title">IronPeak Fitness</div>
+        <div class="portfolio-desc">Modern gym brand with a high-conversion website, class booking integration, and consistent visual identity across all channels.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card reveal reveal-delay-1">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #0c1a2e, #1e40af);">👗</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">Social Media · Branding</div>
+        <div class="portfolio-title">Nirvana Apparel</div>
+        <div class="portfolio-desc">Launched a fashion brand's digital presence from scratch — 0 to 10K followers and ₹8L in online sales in the first quarter.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+    <div class="portfolio-card reveal reveal-delay-2">
+      <div class="portfolio-thumb" style="background: linear-gradient(135deg, #0f172a, #334155);">🏠</div>
+      <div class="portfolio-body">
+        <div class="portfolio-category">Full Package</div>
+        <div class="portfolio-title">PropNest Realty</div>
+        <div class="portfolio-desc">End-to-end digital presence for a real estate firm — website, branding, SEO, and social management as one unified growth engine.</div>
+        <a href="#contact" class="portfolio-link">View Case Study →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="section-header reveal">
+    <div class="section-label">Client Reviews</div>
+    <h2 class="section-title">What Our Clients Say</h2>
+  </div>
+  <div class="testimonials-grid">
+
+    <div class="testi-card reveal">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">Hash World completely transformed our online presence. Our website is now our best salesperson. Within 3 months, leads doubled. Himanshu and the team are truly exceptional.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">RK</div>
+        <div>
+          <div class="testi-name">Rajesh Kapoor</div>
+          <div class="testi-role">CEO, PropNest Realty</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">The SEO results were beyond what I expected. We went from invisible to ranking #1 for our key terms in just four months. ROI has been incredible.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">PS</div>
+        <div>
+          <div class="testi-name">Priya Sharma</div>
+          <div class="testi-role">Founder, FinEdge Consultants</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">Our Instagram went from 800 to 26,000 followers in six months with real engagement. The content team at Hash World just gets our brand like no one else.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">AM</div>
+        <div>
+          <div class="testi-name">Aisha Malik</div>
+          <div class="testi-role">Brand Director, Nirvana Apparel</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">The website they built for us loads in under 2 seconds and has a conversion rate of 8.4%. That's not just design — that's engineering. Couldn't be happier.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">VT</div>
+        <div>
+          <div class="testi-name">Vikram Tiwari</div>
+          <div class="testi-role">Owner, Desi Craft Store</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-1">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">Himanshu took the time to understand our vision and delivered a brand identity that we're proud to show anywhere. Professional, creative, and always responsive.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">SN</div>
+        <div>
+          <div class="testi-name">Suresh Nair</div>
+          <div class="testi-role">Director, IronPeak Fitness</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="testi-card reveal reveal-delay-2">
+      <div class="testi-quote">"</div>
+      <div class="testi-stars">★★★★★</div>
+      <div class="testi-text">We handed Hash World our social media and haven't looked back. They handle everything — strategy, content, replies — and our bookings have grown 60% year-over-year.</div>
+      <div class="testi-author">
+        <div class="testi-avatar">DG</div>
+        <div>
+          <div class="testi-name">Deepa Gupta</div>
+          <div class="testi-role">Manager, Spice Route Restaurant</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal">
+    <div class="section-label">Get In Touch</div>
+    <h2 class="section-title">Let's Build Something Great</h2>
+    <p style="color:var(--text-muted); font-size:1rem; line-height:1.7;">Ready to take your digital presence to the next level? Tell us about your project and we'll get back within 24 hours.</p>
+  </div>
+  <div class="contact-inner">
+    <div class="reveal">
+      <div class="contact-info-item">
+        <div class="contact-info-icon">📍</div>
+        <div>
+          <div class="contact-info-label">Location</div>
+          <div class="contact-info-val">New Delhi, India</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">📧</div>
+        <div>
+          <div class="contact-info-label">Email</div>
+          <div class="contact-info-val">hello@hashworld.in</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">📱</div>
+        <div>
+          <div class="contact-info-label">WhatsApp</div>
+          <div class="contact-info-val">+91 98765 43210</div>
+        </div>
+      </div>
+      <div class="contact-info-item">
+        <div class="contact-info-icon">⏰</div>
+        <div>
+          <div class="contact-info-label">Response Time</div>
+          <div class="contact-info-val">Within 24 hours</div>
+        </div>
+      </div>
+      <div style="margin-top: 16px;">
+        <div class="section-label" style="margin-bottom:12px;">Why choose Hash World</div>
+        <ul class="about-features" style="gap:10px;">
+          <li>No-fluff strategy, results-first approach</li>
+          <li>Dedicated point of contact for every project</li>
+          <li>Transparent pricing, no hidden costs</li>
+          <li>Post-launch support included</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="contact-form-card reveal reveal-delay-2">
+      <form id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="Himanshu" required />
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Durgapal" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="you@company.com" required />
+        </div>
+        <div class="form-group">
+          <label for="service">Service Interested In</label>
+          <select id="service" required>
+            <option value="" disabled selected>Select a service…</option>
+            <option>Website Development</option>
+            <option>Website Management</option>
+            <option>Social Media Management</option>
+            <option>SEO</option>
+            <option>Branding</option>
+            <option>Full Digital Growth Package</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="budget">Budget Range</label>
+          <select id="budget">
+            <option value="" disabled selected>Select a budget…</option>
+            <option>Under ₹25,000</option>
+            <option>₹25,000 – ₹75,000</option>
+            <option>₹75,000 – ₹2,00,000</option>
+            <option>₹2,00,000+</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Tell Us About Your Project</label>
+          <textarea id="message" placeholder="Describe your goals, timeline, and anything else we should know…" required></textarea>
+        </div>
+        <button type="submit" class="form-submit">
+          Send Message
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+        <div class="form-success" id="form-success">
+          ✅ Thanks! We'll be in touch within 24 hours.
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="#hero" class="nav-logo" style="font-size:1.3rem;"><span>#</span>HashWorld</a>
+        <p>A premium digital agency by Himanshu Durgapal. We build websites, manage brands, and grow businesses — one project at a time.</p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Instagram">📸</a>
+          <a href="#" class="social-link" aria-label="LinkedIn">💼</a>
+          <a href="#" class="social-link" aria-label="Twitter">🐦</a>
+          <a href="#" class="social-link" aria-label="YouTube">▶️</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Website Development</a></li>
+          <li><a href="#services">Website Management</a></li>
+          <li><a href="#services">Social Media</a></li>
+          <li><a href="#services">SEO</a></li>
+          <li><a href="#services">Branding</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <ul>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#portfolio">Portfolio</a></li>
+          <li><a href="#testimonials">Testimonials</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="mailto:hello@hashworld.in">hello@hashworld.in</a></li>
+          <li><a href="https://wa.me/919876543210">WhatsApp Us</a></li>
+          <li><a href="#">New Delhi, India</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2025 Hash World. All rights reserved. Crafted by <a href="#about">Himanshu Durgapal</a>.</p>
+      <p><a href="#">Privacy Policy</a> · <a href="#">Terms of Service</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- WHATSAPP BUTTON -->
+<a href="https://wa.me/919876543210?text=Hi%20Hash%20World!%20I'm%20interested%20in%20your%20services."
+   class="whatsapp-btn" target="_blank" rel="noopener" aria-label="Chat on WhatsApp">
+  <span class="whatsapp-tooltip">Chat with us!</span>
+  <svg width="28" height="28" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+  </svg>
+</a>
+
+<script>
+/* ─── ANIMATED GRID BACKGROUND ─── */
+(function() {
+  const canvas = document.getElementById('bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, dots = [], animId;
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initDots() {
+    dots = [];
+    const spacing = 60;
+    for (let x = 0; x < W + spacing; x += spacing) {
+      for (let y = 0; y < H + spacing; y += spacing) {
+        dots.push({
+          x, y,
+          ox: x, oy: y,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.003 + Math.random() * 0.003,
+          amp: 4 + Math.random() * 6,
+          size: 1 + Math.random()
+        });
+      }
+    }
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.4;
+    for (let i = 0; i < dots.length; i++) {
+      const d = dots[i];
+      const px = d.ox + Math.sin(t * d.speed + d.phase) * d.amp;
+      const py = d.oy + Math.cos(t * d.speed + d.phase * 1.3) * d.amp;
+      const alpha = 0.04 + 0.04 * Math.abs(Math.sin(t * d.speed * 0.5 + d.phase));
+      ctx.beginPath();
+      ctx.arc(px, py, d.size, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(37,99,235,${alpha})`;
+      ctx.fill();
+    }
+    animId = requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', () => { resize(); initDots(); });
+  resize();
+  initDots();
+  draw();
+})();
+
+/* ─── WORD ROTATOR ─── */
+(function() {
+  const words = document.querySelectorAll('#wordRotate .word');
+  let current = 0;
+  setInterval(() => {
+    words[current].classList.remove('active');
+    current = (current + 1) % words.length;
+    words[current].classList.add('active');
+  }, 2500);
+})();
+
+/* ─── COUNTER ANIMATION ─── */
+function animateCounter(el, target) {
+  let start = 0;
+  const suffix = el.querySelector('span').textContent;
+  const duration = 1800;
+  const step = (timestamp) => {
+    if (!start) start = timestamp;
+    const progress = Math.min((timestamp - start) / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    el.childNodes[0].textContent = Math.floor(eased * target);
+    if (progress < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+/* ─── SCROLL REVEAL + COUNTER TRIGGER ─── */
+const revealEls = document.querySelectorAll('.reveal');
+const counters = document.querySelectorAll('[data-count]');
+let countersStarted = false;
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+
+revealEls.forEach(el => observer.observe(el));
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && !countersStarted) {
+      countersStarted = true;
+      counters.forEach(c => {
+        animateCounter(c, parseInt(c.dataset.count));
+      });
+    }
+  });
+}, { threshold: 0.3 });
+
+if (counters.length) counterObserver.observe(counters[0]);
+
+/* ─── HAMBURGER / MOBILE MENU ─── */
+function closeMobile() {
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+document.getElementById('hamburger').addEventListener('click', () => {
+  document.getElementById('mobile-menu').classList.toggle('open');
+});
+
+/* ─── CONTACT FORM ─── */
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const btn = this.querySelector('.form-submit');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
+  setTimeout(() => {
+    btn.style.display = 'none';
+    document.getElementById('form-success').style.display = 'block';
+  }, 1200);
+});
+
+/* ─── NAVBAR SCROLL SHADOW ─── */
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('navbar');
+  if (window.scrollY > 50) {
+    nav.style.background = 'rgba(11,15,25,0.95)';
+  } else {
+    nav.style.background = 'rgba(11,15,25,0.7)';
+  }
+});
+</script>
 </body>
 </html>
